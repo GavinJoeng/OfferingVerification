@@ -17,7 +17,7 @@ import org.xml.sax.InputSource;
  */
 public class StringToXmlConverter {
 
-    public static void convertStringToXml(String xmlString, String outputFilePath) {
+    private static void convertStringToXml(String xmlString, String outputFilePath) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -43,7 +43,7 @@ public class StringToXmlConverter {
     }
 
     // 美化格式输出XML内容
-    public static String prettyPrint(Element element) {
+    private static String prettyPrint(Element element) {
         try {
             // 创建Transformer对象并设置缩进和换行
             javax.xml.transform.TransformerFactory transformerFactory =
@@ -66,9 +66,5 @@ public class StringToXmlConverter {
         }
     }
 
-    public static void main(String[] args) {
-        String xmlString = "<root><element1>Value 1</element1><element2>Value 2</element2></root>";
-        convertStringToXml(xmlString, "output.xml");
-    }
 
 }

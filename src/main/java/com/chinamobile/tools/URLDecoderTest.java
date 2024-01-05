@@ -83,7 +83,7 @@ public class URLDecoderTest {
         String result = java.net.URLDecoder.
                 decode(context, StandardCharsets.UTF_8.name());
         StringToXmlConverter stringToXmlConverter = new StringToXmlConverter();
-        stringToXmlConverter.convertStringToXml(result, outputPath + outputFileName + "");
+        //stringToXmlConverter.convertStringToXml(result, outputPath + outputFileName + "");
 
     }
 
