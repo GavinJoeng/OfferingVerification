@@ -1,16 +1,9 @@
 package com.chinamobile.tools;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.stage.Stage;
+import com.chinamobile.constant.SingleNodePathConstants;
 import org.w3c.dom.*;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
@@ -24,35 +17,30 @@ import java.nio.charset.StandardCharsets;
 
 
 /**
- * @description: XMLParser 用於txt文件轉為xml文件並且轉譯code標籤內容
+ * @description: XMLParser 用於txt文件轉為xml文件並且轉譯code標籤內容；並且輸出RULE_XML_FILE、RULE_XML_FILER_FILE兩個文件
  * @author: gavin yang
  * @email: gavinyang@hk.chinamobile.com
  * @date: 2023/12/29 17:57
  */
+public class XMLParser {
 
-public class XMLParser extends Application {
-
-    // 将 filePath 变量声明为 static 类型
-    private static String readTxtFile;
-    private static String originFile;
-    private static String outputFile;
 
     public static void main(String[] args) {
 
         try {
 
-            readTxtFile = "C:\\Users\\P7587\\Desktop\\testFile\\51001800_PLAN_POLICY_RULE.txt";
-            originFile = "C:\\Users\\P7587\\Desktop\\testFile\\51001800_PLAN_POLICY_RULE.xml";
-            outputFile = "C:\\Users\\P7587\\Desktop\\testFile\\51001800_PLAN_POLICY_RULE_FILTER.xml";
+            String RULE_TEXT_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_TEXT_FILE;
+            String RULE_XML_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
+            String RULE_XML_FILER_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILER_FILE;
 
-            String context = readFileToString(readTxtFile + "");
+            String context = readFileToString(RULE_TEXT_FILE + "");
 
             String result = java.net.URLDecoder.decode(context, StandardCharsets.UTF_8.name());
 
-            convertStringToXml(result, originFile + "");
+            convertStringToXml(result, RULE_XML_FILE + "");
 
-            extractXmlInfo(originFile, outputFile);
-            //launch(args);
+            extractXmlInfo(RULE_XML_FILE, RULE_XML_FILER_FILE);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,52 +154,6 @@ public class XMLParser extends Application {
                 }
             }
         }
-
-
-        //NodeList childNodes = originalElement.getChildNodes();
-
-        /* for (int i = 0; i < childNodes.getLength(); i++) {
-            Node childNode = childNodes.item(i);
-            Node node = childNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element originalChildElement = (Element) node;
-                // 判断当前元素是否为 code 标签
-                if (originalChildElement.getTagName().equals("code")) {
-                    String codeValue = originalChildElement.getTextContent();
-                    if (!codeValue.isEmpty() && codeValue != null) {
-                        // 在这里进行代码美化和转义处理
-                        String processedCode = processCode(codeValue);
-                        CDATASection cdata = newDocument.createCDATASection(processedCode);
-                        newElement.appendChild(cdata);
-                    }
-                } else {
-                    // 递归处理子元素
-                    Element newChildElement = copyPurifyElement(originalChildElement, newDocument);
-                    newElement.appendChild(newChildElement);
-                }
-            } else if (childNode.getNodeType() == Node.TEXT_NODE) {
-                // 判断当前节点是否为 text-body
-                if (originalElement.getTagName().equals("text-body")) {
-                    CDATASection cdata = newDocument.createCDATASection(childNode.getNodeValue());
-                    newElement.appendChild(cdata);
-                } else {
-                    Text textNode = newDocument.createTextNode(childNode.getNodeValue());
-                    newElement.appendChild(textNode);
-                }
-            }else {
-                // 判断当前节点是否为 text-body
-                if (originalElement.getTagName().equals("text-body")) {
-                    CDATASection cdata = newDocument.createCDATASection(childNode.getNodeValue());
-                    newElement.appendChild(cdata);
-                }else {
-                    Text textNode = newDocument.createTextNode(childNode.getNodeValue());
-                    newElement.appendChild(textNode);
-                }
-            }
-        }
-
-*/
-
 
         return newElement;
     }
@@ -341,76 +283,4 @@ public class XMLParser extends Application {
             return null;
         }
     }
-
-
-    /**
-     * XML文件轉為TreeView格式
-     *
-     * @param file
-     * @param parent
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws IOException
-     */
-    private static void parseXMLToTree(File file, TreeItem<String> parent) throws ParserConfigurationException, SAXException, IOException {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser parser = factory.newSAXParser();
-        parser.parse(file, new DefaultHandler() {
-            private TreeItem<String> currentItem = parent;
-
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                // 创建新的 TreeItem 并添加到父节点中
-                TreeItem<String> item = new TreeItem<>(qName);
-                currentItem.getChildren().add(item);
-                currentItem = item;
-
-                // 将 XML 元素的属性也添加到 TreeItem 中
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    String attributeName = attributes.getQName(i);
-                    String attributeValue = attributes.getValue(i);
-                    currentItem.getChildren().add(new TreeItem<>(attributeName + ": " + attributeValue));
-                }
-            }
-
-            @Override
-            public void endElement(String uri, String localName, String qName) throws SAXException {
-                // 切换到父节点
-                currentItem = currentItem.getParent();
-            }
-
-            @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
-                // 将 XML 元素的文本内容添加到 TreeItem 中
-                String text = new String(ch, start, length).trim();
-                if (!text.isEmpty()) {
-                    currentItem.getChildren().add(new TreeItem<>(text));
-                }
-            }
-        });
-    }
-
-
-    /**
-     * @param primaryStage the primary stage for this application, onto which
-     *                     the application scene can be set. The primary stage will be embedded in
-     *                     the browser if the application was launched as an applet.
-     *                     Applications may create other stages, if needed, but they will not be
-     *                     primary stages and will not be embedded in the browser.
-     * @throws Exception
-     */
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        TreeItem<String> rootItem = new TreeItem<>("Root");
-        rootItem.setExpanded(true);
-
-        // 解析 XML 文件并生成 TreeView
-        parseXMLToTree(new File(outputFile), rootItem);
-
-        TreeView<String> treeView = new TreeView<>(rootItem);
-        Scene scene = new Scene(treeView, 500, 900);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
 }

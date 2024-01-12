@@ -1,28 +1,44 @@
 package com.chinamobile.tools;
 
+import com.chinamobile.constant.SingleNodePathConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 
+/**
+ * @description: 用於將XML文件轉為JSON文件
+ * @author: gavin yang
+ * @email: gavinyang@hk.chinamobile.com
+ * @date: 2024/1/12 17:28
+ */
 public class XMLtoJSON {
 
 
-    private static String basicPath = "C:\\Users\\P7587\\Desktop\\testFile\\";
-    private static String readXMLFile = "";
 
-    private static String outputJsonFile = "";
 
     public static void main(String[] args) {
+
+        String xmlFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
+        String jsonFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_JSON_PATH;
+        convertXML2Json(xmlFilePath,jsonFilePath);
+
+    }
+
+
+    /**
+     * 將XML文件讀取調用convertElementToJson來遍歷XML文件，並且輸出JSON文件
+     * @param xmlFilePath
+     * @param jsonFilePath
+     */
+    private static void convertXML2Json(String xmlFilePath, String jsonFilePath){
         try {
 
-            readXMLFile = "51001800_PLAN_POLICY_RULE.xml";
-            outputJsonFile = "51001800_PLAN_POLICY_RULE.json";
-            File inputFile = new File(basicPath + readXMLFile);
+
+            File inputFile = new File(xmlFilePath);
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -34,7 +50,7 @@ public class XMLtoJSON {
             convertElementToJson(rootElement, json);
 
             System.out.println(json.toString(4));
-            FileWriter fileWriter = new FileWriter(basicPath + outputJsonFile);
+            FileWriter fileWriter = new FileWriter(jsonFilePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             bufferedWriter.write(json.toString(4));
@@ -48,10 +64,17 @@ public class XMLtoJSON {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
-
+    /**
+     * 將XML的Element元素進行遍歷轉為JSON格式
+     * @param element
+     * @param json
+     */
     private static void convertElementToJson(Element element, JSONObject json) {
+
         NamedNodeMap attributes = element.getAttributes();
         if (attributes.getLength() > 0) {
             JSONObject attributeJson = new JSONObject();
@@ -71,11 +94,12 @@ public class XMLtoJSON {
                 if (tagName.equals("code")) {
                     String codeValue = childElement.getTextContent();
                     if (!codeValue.isEmpty()) {
-                        String processedCode = processCode(codeValue);
+                        //String processedCode = processCode(codeValue);
                         //json.put(tagName, processedCode);
+                        System.out.println("code標籤進行忽略！");
                     }
                 } else if (tagName.equals("text-body")) {
-                    String textContent = getTextContent(childElement);
+                    String textContent = node.getFirstChild().getTextContent();
                     if (!textContent.isEmpty()) {
                         json.put(tagName, textContent);
                     }
@@ -109,20 +133,4 @@ public class XMLtoJSON {
         }
     }
 
-    private static String getTextContent(Element element) {
-        NodeList childNodes = element.getChildNodes();
-        StringBuilder textContent = new StringBuilder();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeType() == Node.TEXT_NODE) {
-                textContent.append(node.getNodeValue());
-            }
-        }
-        return textContent.toString().trim();
-    }
-
-    private static String processCode(String code) {
-        // 进行代码处理，并返回处理后的结果
-        return code;
-    }
 }
