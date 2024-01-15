@@ -9,7 +9,7 @@ package com.chinamobile.constant;
 public class SingleNodePathConstants {
 
     //OFFERING_ID
-    public static String OFFERING_ID = "51001800";
+    public static String OFFERING_ID = "20046900";
     //存儲和讀取文件夾基本路經
     public static String BASIC_PATH = "C:\\Users\\P7587\\Desktop\\testFile\\";
     //從華為數據庫複製的信息放在TXT文件夾中
