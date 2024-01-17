@@ -11,4 +11,5 @@ public class OfferingVerificationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OfferingVerificationApplication.class, args);
 	}
+
 }

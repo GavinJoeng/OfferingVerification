@@ -13,7 +13,7 @@ public class SingleNodePathConstants {
     //存儲和讀取文件夾基本路經
     public static String BASIC_PATH = "C:\\Users\\P7587\\Desktop\\testFile\\";
     //從華為數據庫複製的信息放在TXT文件夾中
-    public static String RULE_TEXT_FILE = "_PLAN_POLICY_RULE.txt";
+    public static String RULE_TXT_FILE = "_PLAN_POLICY_RULE.txt";
     //xml文件存儲名稱
     public static String RULE_XML_FILE = "_PLAN_POLICY_RULE.xml";
     //xml文件轉碼後的<code>標籤存儲名稱
@@ -33,6 +33,9 @@ public class SingleNodePathConstants {
 
     //其實和BASIC_NODE_PATH_MID路經一樣，只是方便作區分。
     public static String CONDITION_NODE_LIST_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"condition-selection-pattern\"][\"condition-node\"]";
+
+    //判斷是否是矩陣模式
+    public static String IS_MATRIX_PATTERN_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"@attributes\"][\"chosen-element\"]";
 
     //logicScript路經
     public static String LOGIC_SCRIPT_PATH = "[\"logic-expression\"].text[\"logic-script\"].value";

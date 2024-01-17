@@ -29,7 +29,7 @@ public class XMLParser {
 
         try {
 
-            String RULE_TEXT_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_TEXT_FILE;
+            String RULE_TEXT_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_TXT_FILE;
             String RULE_XML_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
             String RULE_XML_FILER_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILER_FILE;
 
@@ -41,11 +41,29 @@ public class XMLParser {
 
             extractXmlInfo(RULE_XML_FILE, RULE_XML_FILER_FILE);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * TXT文件轉為XML
+     * @param txtFilePath
+     * @param xmlFilePath
+     * @throws IOException
+     */
+    public static void convertTxt2XML(String txtFilePath, String xmlFilePath) throws IOException {
+
+        String RULE_XML_FILER_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILER_FILE;
+
+        String context = readFileToString(txtFilePath);
+
+        String result = java.net.URLDecoder.decode(context, StandardCharsets.UTF_8.name());
+
+        convertStringToXml(result, xmlFilePath);
+
+        extractXmlInfo(xmlFilePath, RULE_XML_FILER_FILE);
     }
 
     /**

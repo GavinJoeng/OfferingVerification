@@ -34,7 +34,7 @@ public class XMLtoJSON {
      * @param xmlFilePath
      * @param jsonFilePath
      */
-    private static void convertXML2Json(String xmlFilePath, String jsonFilePath){
+    public static void convertXML2Json(String xmlFilePath, String jsonFilePath){
         try {
 
 

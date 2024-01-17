@@ -59,8 +59,6 @@ public class ConditionNode {
     //nodeLevel-nodeLevel是所有的key命名的關鍵，根據是否有葉子節點來判斷這棵樹的層級
     //因為不止一個節點，需要用List/Map來存儲這個層級treeMapLevel()方法進行完善。
     private Integer nodeLevel;
-    //action
-    private List<Map<String,String>> actionMapList;
 
     //關鍵信息
     //如果沒有動作：actionType0-0 = "-"，actionType2-4="charge-discount-action";
@@ -70,6 +68,15 @@ public class ConditionNode {
 
     //node分支數，層級數,[1,1,5]表示第一層有1個節點，第二層1個節點，第三個層級為5個節點
     List<Integer> conditionNodeListSize;
+
+    //action
+    private List<Map<String,String>> actionMapList;
+
+    //根據節點不同獲取不同的MatrixAction
+    private Map<String, MatrixAction> matrixActionMap;
+
+    //根據節點不同獲取不同的action
+    private Map<String, Action> actionMap;
 
 
 }

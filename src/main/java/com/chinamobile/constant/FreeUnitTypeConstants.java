@@ -3,7 +3,12 @@ package com.chinamobile.constant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @description: freeUnitType對應關係
+ * @author: gavin yang
+ * @email: gavinyang@hk.chinamobile.com
+ * @date: 2024/1/15 16:23
+ */
 public class FreeUnitTypeConstants {
     public static final Map<String, String> DATA_MAP;
 

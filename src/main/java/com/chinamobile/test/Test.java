@@ -1,7 +1,7 @@
 package com.chinamobile.test;
 
 import com.chinamobile.constant.FreeUnitTypeConstants;
-import com.chinamobile.constant.SystemMeasurementConstants;
+import com.chinamobile.constant.SysMeasurementConstants;
 
 /**
  * @description: some desc
@@ -15,7 +15,7 @@ public class Test {
         String s = FreeUnitTypeConstants.DATA_MAP.get("3000047");
         System.out.println(s);
 
-        String s1 = SystemMeasurementConstants.DATA_MAP.get("901");
+        String s1 = SysMeasurementConstants.DATA_MAP.get("901");
         System.out.println(s1);
     }
 
