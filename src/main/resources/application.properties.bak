@@ -1,6 +1,0 @@
-# datasource config
-spring.datasource.driver-class-name=com.huawei.ngcbs.dbmanproxydriver.jdbc.ZCloudProxyDriver
-spring.datasource.url=jdbc:zcloudproxy@10.0.54.18:21800?cluster=saassysdb_cluster1&vnode=106&mode=native
-spring.datasource.username=admin
-spring.datasource.password=A#dmin_1
-mybatis.mapper-locations=classpath:mapper/*Dao.xml

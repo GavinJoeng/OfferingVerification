@@ -33,15 +33,15 @@ public class JsonParserUtil {
 
     public static void main(String[] args) throws IOException {
 
-        String RULE_TEXT_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_TXT_FILE;
-        String RULE_XML_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
+        String RULE_TEXT_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_TXT_FILE;
+        String RULE_XML_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILE;
         convertTxt2XML(RULE_TEXT_FILE, RULE_XML_FILE);
 
-        String xmlFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
-        String jsonFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_JSON_PATH;
+        String xmlFilePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILE;
+        String jsonFilePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_JSON_PATH;
         convertXML2Json(xmlFilePath,jsonFilePath);
 
-        String jsonReadPath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_JSON_PATH;
+        String jsonReadPath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_JSON_PATH;
         String isSuccess = extractJsonInfo(jsonReadPath);
         System.out.println(isSuccess);
 
@@ -74,15 +74,6 @@ public class JsonParserUtil {
         // 将Object类型的对象转换为JSON格式的字符串，并赋值给jsonString变量
         String jsonString = JSON.toJSONString(jsonObject);
 
-        //conditionNodeList的獲取，並且獲取多少分支。
-        List<String> conditionNodeList = getConditionNodeList(jsonString, SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]" + SingleNodePathConstants.CONDITION_NODE_LIST_PATH);
-        for (int i = 0; i < conditionNodeList.size(); i++) {
-            String conditionNode = conditionNodeList.get(i);
-            System.out.println("下標為：" + i + " 節點信息為：" + conditionNode);
-        }
-
-        System.out.println("conditionNodeList的大小為：" + conditionNodeList.size() + "  值為：" + conditionNodeList.get(0));
-
         //獲取某分支的層次，0、1、2...，從0開始計數
         Integer treeMapLevel = treeMapLevel(jsonString);
         System.out.println("--------最高層數為：--------->" + treeMapLevel);
@@ -101,7 +92,7 @@ public class JsonParserUtil {
         List<Integer> conditionNodeListSize = new ArrayList();
 
         //如果treeMaplevel是2的話，因為是從0計算層數，則需要遍歷的次數應該為3次，故需要加1；
-        conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, SingleNodePathConstants.BASIC_NODE_PATH_MID);
+        conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, MultiNodePathConstants.BASIC_NODE_PATH_MID);
 
 
         conditionNode = new ConditionNode();
@@ -118,7 +109,7 @@ public class JsonParserUtil {
 
         //把信息裝入實體類中，傳送到前端進行展示，目前是以實現後端為主。
         //conditionNode.setActionMapList(actionMapList);
-        String filePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + "_PLAN_POLICY_RULE" + ".xlsx";
+        String filePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + "_PLAN_POLICY_RULE" + ".xlsx";
         generateExcel(filePath, conditionNode);
         System.out.println("gavinjoeng" + conditionNode);
 
@@ -155,6 +146,9 @@ public class JsonParserUtil {
             Integer listSize = conditionNodeListSize.get(i);
             if (i == 0 && listSize == 1) {
                 matrixPathLinkBuilder.append("[").append(0).append("]");
+                if (i == loopCount - 1) {
+                    matrixLinkPathList.add(matrixPathLinkBuilder.toString());
+                }
 
             } else if (listSize == 1) {
                 matrixPathLinkBuilder.append(MatrixPatternPath.BASIC_NODE_PATH_MID);
@@ -166,7 +160,7 @@ public class JsonParserUtil {
                 for (int j = 0; j < listSize; j++) {
                     //TODO 多節點循環問題
                     Integer startIndex = matrixPathLinkBuilder.length(); // 记录循环前的 pathBuilder 长度
-                    matrixPathLinkBuilder.append(SingleNodePathConstants.BASIC_NODE_PATH_MID);
+                    matrixPathLinkBuilder.append(MultiNodePathConstants.BASIC_NODE_PATH_MID);
                     matrixPathLinkBuilder.append("[").append(j).append("]");
                     matrixLinkPathList.add(matrixPathLinkBuilder.toString());
                     // 在下一次循环之前，删除新增的内容，恢复原来的 pathBuilder
@@ -203,7 +197,7 @@ public class JsonParserUtil {
                 } catch (IOException e) {
                     System.out.println("写入文件时出现错误：" + e.getMessage());
                 }
-
+                //TODO 由於xml文件只有一些matrix_id和動作類型的信息，對於資費需要再查詢數據庫進行獲取金額等信息，如果可以直連華為數據庫，則不需要跟用户進行交互
                 // 1.程序掛起，需要打開輸出的文件，裏面有SQL語句。
                 // 2.需要在華為數據庫裏進行查詢對應Matrix文件，之後複製到輸出的文件中
                 // 3.选择你複製之後的文件
@@ -217,7 +211,7 @@ public class JsonParserUtil {
                 String matrixActionKey = "matrixActionMap" + treeLevel + "-" + i;
                 //存儲到Map，如何命名key？
                 matrixActionMap.put(matrixActionKey, matrixAction);
-                //TODO 由於xml文件只有一些matrix_id和動作類型的信息，對於資費需要再查詢數據庫進行獲取金額等信息
+
 
             } else {
                 //獲取action關鍵信息
@@ -295,14 +289,13 @@ public class JsonParserUtil {
 
         //用List來存儲conditionNodeList每層的大小
         //如果treeMaplevel是2的話，因為是從0計算層數，則需要遍歷的次數應該為3次，故需要加1；
-        //List<Integer> conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, SingleNodePathConstants.BASIC_NODE_PATH_MID);
+        //List<Integer> conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, MultiNodePathConstants.BASIC_NODE_PATH_MID);
         matrixAction = getMatrixAction(jsonString, matrixAction);
 
         return matrixAction;
     }
 
     /**
-     * TODO 後續會更改，根據ActionType的不同會修改對應的路經，需要把動作類型進行替換。
      * JSON["pattern-action-union"].action["free-unit-bonus-action"]["bonus-amount"].constant["constant-value"]["@attributes"]["display-value"]
      * JSON["pattern-action-union"].action["free-unit-bonus-action"]["display-measurement-id"].value
      * @param jsonString
@@ -311,18 +304,19 @@ public class JsonParserUtil {
      */
     private static MatrixAction getMatrixAction(String jsonString, MatrixAction matrixAction) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append(MatrixPatternPath.FREE_UNIT_TYPE_ID_PATH);
+        String actionType = matrixAction.getActionType();
+        queryBuilder.append(MatrixPatternPath.MATRIX_ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MatrixPatternPath.FREE_UNIT_TYPE_ID_PATH);
         String freeUnitTypeID = JsonPath.read(jsonString, queryBuilder.toString()).toString();
 
         String freeUnitType = FreeUnitTypeConstants.DATA_MAP.get(freeUnitTypeID);
 
         queryBuilder.setLength(0);
-        queryBuilder.append(MatrixPatternPath.MATRIX_BONUS_AMOUNT_PATH);
+        queryBuilder.append(MatrixPatternPath.MATRIX_ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MatrixPatternPath.MATRIX_BONUS_AMOUNT_PATH);
         String matrixBonusAmount = JsonPath.read(jsonString, queryBuilder.toString()).toString();
 
 
         queryBuilder.setLength(0);
-        queryBuilder.append(MatrixPatternPath.MATRIX_MEASUREMENT_ID_PATH);
+        queryBuilder.append(MatrixPatternPath.MATRIX_ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MatrixPatternPath.MATRIX_MEASUREMENT_ID_PATH);
         String matrixMeasurementId = JsonPath.read(jsonString, queryBuilder.toString()).toString();
         String matrixMeasurement = SysMeasurementConstants.DATA_MAP.get(matrixMeasurementId);
         matrixAction.setFreeUnitType(freeUnitType);
@@ -338,10 +332,10 @@ public class JsonParserUtil {
      */
     private static String chooseFile() {
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT Files", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT Files", ".txt");
         fileChooser.setFileFilter(filter);
 
-        // 设置初始目录
+        // 设置初始目录，這是默認打開文件夾的位置，在SingleNodePathConstants裏面更改。
         String initialDirectory = MatrixPatternPath.BASIC_PATH;
         fileChooser.setCurrentDirectory(new File(initialDirectory));
 
@@ -381,19 +375,19 @@ public class JsonParserUtil {
         //<!-- "charge-discount-action" -->
         //獲取actionType
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append(linkPath).append(SingleNodePathConstants.ACTION_TYPE_PATH);
+        queryBuilder.append(linkPath).append(MultiNodePathConstants.ACTION_TYPE_PATH);
         String actionType = JsonPath.read(jsonString, queryBuilder.toString()).toString();
         action.setActionType(actionType);
 
         //<!-- integer = 0 -->
         queryBuilder.setLength(0);
-        queryBuilder.append(linkPath).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.INTEGER_PATH);
+        queryBuilder.append(linkPath).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_INTEGER_PATH);
         String amount = JsonPath.read(jsonString, queryBuilder.toString()).toString();
         action.setAmount(amount);
 
         //<!-- currency-measurement = 501 -->
         queryBuilder.setLength(0);
-        queryBuilder.append(linkPath).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.CURRENCY_MEASUREMENT_PATH);
+        queryBuilder.append(linkPath).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_CURRENCY_MEASUREMENT_PATH);
         String currencyMeasurement = JsonPath.read(jsonString, queryBuilder.toString()).toString();
         //直接轉換為對應貨幣
         String currencyUnit = SysCurrencyMeasurementConstants.DATA_MAP.get(currencyMeasurement);
@@ -788,20 +782,20 @@ public class JsonParserUtil {
         List<String> actionLinkPathList = new ArrayList<>();
         Integer loopCount = conditionNodeListSize.size();
 
-        StringBuilder actionBuilder = new StringBuilder(SingleNodePathConstants.BASIC_NODE_PATH_START);
+        StringBuilder actionBuilder = new StringBuilder(MultiNodePathConstants.BASIC_NODE_PATH_START);
         for (int i = 0; i <= loopCount; i++) {
 
             Integer listSize = conditionNodeListSize.get(i);
             if (listSize == 1 && i == 0) {
                 actionBuilder.append("[").append(0).append("]");
             } else if (listSize == 1) {
-                actionBuilder.append(SingleNodePathConstants.BASIC_NODE_PATH_MID);
+                actionBuilder.append(MultiNodePathConstants.BASIC_NODE_PATH_MID);
                 actionBuilder.append("[").append(0).append("]");
             } else {
                 //TODO 需要解決循環[1,2,5]類問題。
                 for (int j = 0; j < listSize; j++) {
                     Integer startIndex = actionBuilder.length(); // 记录循环前的 pathBuilder 长度
-                    actionBuilder.append(SingleNodePathConstants.BASIC_NODE_PATH_MID);
+                    actionBuilder.append(MultiNodePathConstants.BASIC_NODE_PATH_MID);
                     actionBuilder.append("[").append(j).append("]");
                     actionLinkPathList.add(actionBuilder.toString());
                     // 在下一次循环之前，删除新增的内容，恢复原来的 pathBuilder
@@ -847,7 +841,7 @@ public class JsonParserUtil {
             //獲取actionType
             String queryNodeListString = "";
             StringBuilder queryBuilder = new StringBuilder();
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_TYPE_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_TYPE_PATH);
             //queryNodeListString = actionLinkPathList.get(i) + ACTION_TYPE_PATH;
             String actionType = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("actionType", actionType);
@@ -859,19 +853,19 @@ public class JsonParserUtil {
 
             //<!-- discount-fee-flag = 1 -->
             queryBuilder.setLength(0);
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.DISCOUNT_FEE_FLAG_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_FEE_FLAG_PATH);
             String discountFeeFlag = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("discountFeeFlag", discountFeeFlag);
 
             //<!-- discount-prorate-method = 1 -->
             queryBuilder.setLength(0);
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.DISCOUNT_PRORATE_METHOD_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_PRORATE_METHOD_PATH);
             String discountProrateMethod = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("discountProrateMethod", discountProrateMethod);
 
             //<!-- integer = 0 -->
             queryBuilder.setLength(0);
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.INTEGER_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_INTEGER_PATH);
             String integer = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("integer", integer);
 
@@ -881,13 +875,13 @@ public class JsonParserUtil {
 
             //<!-- exponent = 0 -->
             queryBuilder.setLength(0);
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.EXPONENT_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_EXPONENT_PATH);
             String exponent = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("exponent", exponent);
 
             //<!-- currency-measurement = 501 -->
             queryBuilder.setLength(0);
-            queryBuilder.append(actionLinkPathList.get(i)).append(SingleNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(SingleNodePathConstants.CURRENCY_MEASUREMENT_PATH);
+            queryBuilder.append(actionLinkPathList.get(i)).append(MultiNodePathConstants.ACTION_BASIC_PATH).append("action[\"").append(actionType).append("\"]").append(MultiNodePathConstants.DISCOUNT_CURRENCY_MEASUREMENT_PATH);
             String currencyMeasurement = JsonPath.read(jsonString, queryBuilder.toString()).toString();
             actionMap.put("currencyMeasurement", currencyMeasurement);
 
@@ -936,9 +930,9 @@ public class JsonParserUtil {
      */
     private static Map<String, String> getTextBodyMap(String jsonString, Integer treeMapLevel) {
         //1.拼接路經 TEXT_BODY_PATH
-        String basicLogicScriptPath = SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]";
-        String getScriptPath = basicLogicScriptPath + SingleNodePathConstants.TEXT_BODY_PATH;
-        String addPath = SingleNodePathConstants.BASIC_NODE_PATH_MID;
+        String basicLogicScriptPath = MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]";
+        String getScriptPath = basicLogicScriptPath + MultiNodePathConstants.TEXT_BODY_PATH;
+        String addPath = MultiNodePathConstants.BASIC_NODE_PATH_MID;
 
         /**
          * $.["pattern-action-union"].pattern["condition-selection-pattern"]["condition-node"][0]["logic-expression"].annotation["annotation-text"]["inner-text"]["single-language-text"]["text-body"]
@@ -962,7 +956,7 @@ public class JsonParserUtil {
         StringBuilder recordBuilder = new StringBuilder();
 
         for (int i = 0; i < treeMapLevel + 1; i++) {
-            StringBuilder pathBuilder = new StringBuilder(SingleNodePathConstants.BASIC_NODE_PATH_START);
+            StringBuilder pathBuilder = new StringBuilder(MultiNodePathConstants.BASIC_NODE_PATH_START);
 
             /**
              * TODO 循環問題需要修改，等有例子後進行完善
@@ -989,18 +983,18 @@ public class JsonParserUtil {
             Integer loopCount = conditionNodeListSize.get(i);
             if (i == 0 && loopCount == 1) {
                 //暫時定為[0]
-                String queryNodeListString = pathBuilder.toString() + "[0]" + SingleNodePathConstants.TEXT_BODY_PATH;
+                String queryNodeListString = pathBuilder.toString() + "[0]" + MultiNodePathConstants.TEXT_BODY_PATH;
                 textBodyMapValue = JsonPath.read(jsonString, queryNodeListString).toString();
                 System.out.println("textBodyValue为：" + textBodyMapValue);
                 textBodyMapKey = String.format("textBody0-0");
                 textBodyMap.put(textBodyMapKey, textBodyMapValue);
-                recordBuilder.append(SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]");
+                recordBuilder.append(MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]");
             } else {
                 if (loopCount == 1) {
                     for (int j = 0; j < i; j++) {
                         pathBuilder.append("[0]").append(addPath).append("[0]");
                     }
-                    String queryNodeListString = pathBuilder.toString() + SingleNodePathConstants.TEXT_BODY_PATH;
+                    String queryNodeListString = pathBuilder.toString() + MultiNodePathConstants.TEXT_BODY_PATH;
                     textBodyMapValue = JsonPath.read(jsonString, queryNodeListString).toString();
                     System.out.println("textBodyValue为：" + textBodyMapValue);
                     Integer nameCount = i - 1;
@@ -1014,7 +1008,7 @@ public class JsonParserUtil {
 
                         Integer startIndex = recordBuilder.length(); // 记录循环前的 pathBuilder 长度
                         recordBuilder.append(addPath).append("[").append(j).append("]");
-                        String queryNodeListString = recordBuilder.toString() + SingleNodePathConstants.TEXT_BODY_PATH;
+                        String queryNodeListString = recordBuilder.toString() + MultiNodePathConstants.TEXT_BODY_PATH;
                         textBodyMapValue = JsonPath.read(jsonString, queryNodeListString).toString();
                         System.out.println("textBodyMapValue为：" + textBodyMapValue);
                         textBodyMapKey = String.format("textBody" + i + "-" + j);
@@ -1053,9 +1047,9 @@ public class JsonParserUtil {
      */
     private static Map<String, String> getLogicScriptMap(String jsonString, Integer treeMapLevel) {
         //1.拼接路經 LOGIC_SCRIPT_PATH
-        String basicLogicScriptPath = SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]";
-        String getScriptPath = basicLogicScriptPath + SingleNodePathConstants.LOGIC_SCRIPT_PATH;
-        String addPath = SingleNodePathConstants.BASIC_NODE_PATH_MID;
+        String basicLogicScriptPath = MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]";
+        String getScriptPath = basicLogicScriptPath + MultiNodePathConstants.LOGIC_SCRIPT_PATH;
+        String addPath = MultiNodePathConstants.BASIC_NODE_PATH_MID;
         //2.定義Map存儲Script
         Map<String, String> logicScriptMap = new HashMap<>();
         String logicScriptValue = "";
@@ -1084,7 +1078,7 @@ public class JsonParserUtil {
         //--------最高層數為：--------->2
         //需要獲取conditionNode的數組大小
         for (int i = 0; i < treeMapLevel + 1; i++) {
-            StringBuilder pathBuilder = new StringBuilder(SingleNodePathConstants.BASIC_NODE_PATH_START);
+            StringBuilder pathBuilder = new StringBuilder(MultiNodePathConstants.BASIC_NODE_PATH_START);
 
             /**
              * TODO 循環問題需要修改，等有例子後進行完善
@@ -1111,18 +1105,18 @@ public class JsonParserUtil {
             Integer loopCount = conditionNodeListSize.get(i);
             if (i == 0 && loopCount == 1) {
                 //暫時定為[0]
-                String queryNodeListString = pathBuilder.toString() + "[0]" + SingleNodePathConstants.LOGIC_SCRIPT_PATH;
+                String queryNodeListString = pathBuilder.toString() + "[0]" + MultiNodePathConstants.LOGIC_SCRIPT_PATH;
                 logicScriptValue = JsonPath.read(jsonString, queryNodeListString).toString();
                 System.out.println("logicScriptValue为：" + logicScriptValue);
                 logicScriptKey = String.format("logicScript0-0");
                 logicScriptMap.put(logicScriptKey, logicScriptValue);
-                recordBuilder.append(SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]");
+                recordBuilder.append(MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]");
             } else {
                 if (loopCount == 1) {
                     for (int j = 0; j < i; j++) {
                         pathBuilder.append("[0]").append(addPath).append("[0]");
                     }
-                    String queryNodeListString = pathBuilder.toString() + SingleNodePathConstants.LOGIC_SCRIPT_PATH;
+                    String queryNodeListString = pathBuilder.toString() + MultiNodePathConstants.LOGIC_SCRIPT_PATH;
                     logicScriptValue = JsonPath.read(jsonString, queryNodeListString).toString();
                     System.out.println("logicScriptValue为：" + logicScriptValue);
                     Integer nameCount = i - 1;
@@ -1136,7 +1130,7 @@ public class JsonParserUtil {
 
                         Integer startIndex = recordBuilder.length(); // 记录循环前的 pathBuilder 长度
                         recordBuilder.append(addPath).append("[").append(j).append("]");
-                        String queryNodeListString = recordBuilder.toString() + SingleNodePathConstants.LOGIC_SCRIPT_PATH;
+                        String queryNodeListString = recordBuilder.toString() + MultiNodePathConstants.LOGIC_SCRIPT_PATH;
                         logicScriptValue = JsonPath.read(jsonString, queryNodeListString).toString();
                         System.out.println("logicScriptValue为：" + logicScriptValue);
                         logicScriptKey = String.format("logicScript" + i + "-" + j);
@@ -1176,7 +1170,7 @@ public class JsonParserUtil {
         List<Integer> conditionNodeListSize = new ArrayList<>();
         Integer listSize = 0;
         for (int i = 0; i < treeMapLevel + 1; i++) {
-            StringBuilder pathBuilder = new StringBuilder(SingleNodePathConstants.BASIC_NODE_PATH_START);
+            StringBuilder pathBuilder = new StringBuilder(MultiNodePathConstants.BASIC_NODE_PATH_START);
             if (i == 0) {
                 String queryNodeListString = pathBuilder.toString();
                 List<String> conditionNodeList = getConditionNodeList(jsonString, queryNodeListString);
@@ -1263,9 +1257,9 @@ public class JsonParserUtil {
      */
     public static Integer treeMapLevel(String jsonString) {
         //1.拼接路經
-        String basicLevelPath = SingleNodePathConstants.BASIC_NODE_PATH_START + "[0]";
-        String verifyPath = basicLevelPath + SingleNodePathConstants.LEVEL_PATH;
-        String addPath = SingleNodePathConstants.BASIC_NODE_PATH_MID + "[0]";
+        String basicLevelPath = MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]";
+        String verifyPath = basicLevelPath + MultiNodePathConstants.LEVEL_PATH;
+        String addPath = MultiNodePathConstants.BASIC_NODE_PATH_MID + "[0]";
 //        verifyPath = BASIC_NODE_PATH_START +"[0]" + BASIC_NODE_PATH_MID + "[0]" + LEVEL_PATH;
 //        verifyPath = BASIC_NODE_PATH_START +"[0]" + BASIC_NODE_PATH_MID + "[0]" + BASIC_NODE_PATH_MID + "[0]" + LEVEL_PATH;
 //        verifyPath = BASIC_NODE_PATH_START +"[0]" + BASIC_NODE_PATH_MID + "[0]" + BASIC_NODE_PATH_MID + "[0]" + BASIC_NODE_PATH_MID + "[0]" + LEVEL_PATH;
@@ -1284,7 +1278,7 @@ public class JsonParserUtil {
                 jointStr += addPath;
             }
             verifyPath = "";
-            verifyPath = jointStr + SingleNodePathConstants.LEVEL_PATH;
+            verifyPath = jointStr + MultiNodePathConstants.LEVEL_PATH;
             isContains = isContainNode(jsonString, verifyPath);
         }
 
@@ -1294,7 +1288,7 @@ public class JsonParserUtil {
             jointStr += addPath;
         }
         verifyPath = "";
-        verifyPath = jointStr + SingleNodePathConstants.LEVEL_PATH;
+        verifyPath = jointStr + MultiNodePathConstants.LEVEL_PATH;
         levelNum = JsonPath.read(jsonString, verifyPath).toString();
         return Integer.parseInt(levelNum);
     }
@@ -1302,7 +1296,7 @@ public class JsonParserUtil {
 
     /**
      * 用於獲取conditionNodeList
-     *
+     * List<String> conditionNodeList = getConditionNodeList(jsonString, MultiNodePathConstants.BASIC_NODE_PATH_START + "[0]" + MultiNodePathConstants.CONDITION_NODE_LIST_PATH);
      * @param jsonString
      * @param conditionNodeListPath
      * @return

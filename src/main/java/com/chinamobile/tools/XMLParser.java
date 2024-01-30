@@ -1,6 +1,6 @@
 package com.chinamobile.tools;
 
-import com.chinamobile.constant.SingleNodePathConstants;
+import com.chinamobile.constant.MultiNodePathConstants;
 import org.w3c.dom.*;
 
 import org.xml.sax.InputSource;
@@ -29,9 +29,9 @@ public class XMLParser {
 
         try {
 
-            String RULE_TEXT_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_TXT_FILE;
-            String RULE_XML_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
-            String RULE_XML_FILER_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILER_FILE;
+            String RULE_TEXT_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_TXT_FILE;
+            String RULE_XML_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILE;
+            String RULE_XML_FILER_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILER_FILE;
 
             String context = readFileToString(RULE_TEXT_FILE + "");
 
@@ -55,7 +55,7 @@ public class XMLParser {
      */
     public static void convertTxt2XML(String txtFilePath, String xmlFilePath) throws IOException {
 
-        String RULE_XML_FILER_FILE = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILER_FILE;
+        String RULE_XML_FILER_FILE = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILER_FILE;
 
         String context = readFileToString(txtFilePath);
 

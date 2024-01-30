@@ -1,0 +1,1 @@
+SELECT e.PLAN_POLICY_RULE FROM pm_plan_relation a, pe_plan b, PE_PLAN_VERSION c, Pe_Plan_Policy d, pe_pp_rule e WHERE a.offering_id = %d AND a.plan_type = 'P' AND a.plan_id = b.plan_id AND b.plan_id = c.plan_id AND c.exp_date > SYSDATE AND c.plan_version_id = d.plan_version_id AND d.plan_policy_id = e.plan_policy_id AND b.plan_name LIKE 'Rental%%';

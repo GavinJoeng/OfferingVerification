@@ -57,7 +57,7 @@ public class MatrixAnalysisOperation {
 
         //已經用別的方法實現
         //讀取EXCEL表格，拼接關鍵信息
-        //String filePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + "_PLAN_POLICY_RULE" + ".xlsx";
+        //String filePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + "_PLAN_POLICY_RULE" + ".xlsx";
         //generateExcel(filePath, conditionNode);
         //輸出新的EXCEL表格
 
@@ -99,7 +99,7 @@ public class MatrixAnalysisOperation {
 
         //用List來存儲conditionNodeList每層的大小
         //如果treeMaplevel是2的話，因為是從0計算層數，則需要遍歷的次數應該為3次，故需要加1；
-        //List<Integer> conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, SingleNodePathConstants.BASIC_NODE_PATH_MID);
+        //List<Integer> conditionNodeListSize = calConditionNodeListSize(jsonString, treeMapLevel, MultiNodePathConstants.BASIC_NODE_PATH_MID);
         matrixAction = getMatrixAction(jsonString, matrixAction);
 
         return matrixAction;
@@ -135,5 +135,7 @@ public class MatrixAnalysisOperation {
 
         return matrixAction;
     }
+
+
 
 }

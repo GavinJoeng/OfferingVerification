@@ -1,6 +1,6 @@
 package com.chinamobile.operation;
 
-import com.chinamobile.constant.SingleNodePathConstants;
+import com.chinamobile.constant.MultiNodePathConstants;
 
 import static com.chinamobile.tools.JsonParserUtil.extractJsonInfo;
 
@@ -12,15 +12,10 @@ import static com.chinamobile.tools.JsonParserUtil.extractJsonInfo;
  */
 public class ConditionNodeAnalysisOperation {
 
-
-
-
     public static void main(String[] args) {
-        String jsonReadPath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_JSON_PATH;
+        String jsonReadPath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_JSON_PATH;
         String isSuccess = extractJsonInfo(jsonReadPath);
         System.out.println(isSuccess);
-
-
     }
 
 }

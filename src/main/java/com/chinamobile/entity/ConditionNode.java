@@ -17,40 +17,6 @@ import java.util.Map;
 @ToString
 @AllArgsConstructor
 public class ConditionNode {
-    /*<!-- 00代表層級，暫時定為2位 -->
-        key: "logicScript02"
-        value:"text["logic-script"].value"
-        String logicScript = new String();
-        Map<String,String> logicScriptMap = new hashMap();
-
-        <!-- 00代表層級，暫時定為2位 -->
-        String textBody = new String();
-        Map<String,String> textBodyMap = new hashMap();
-
-        key: "textBody00"
-        value:"["single-language-text"]["text-body"]"
-
-
-        <!-- nodeLevel是所有的key命名的關鍵，根據是否有葉子節點來判斷這棵樹的層級 -->
-        Integer nodeLevel = new Interger();
-
-        //action
-        List<Map> actionMapList = new arrayList();
-        //action是屬於那個conditionNode的？根據什麼來劃分
-        Map<String> actionMap = new hashMap();
-
-        key: actionType
-        value: "charge-discount-action"
-        key: discountFeeFlag
-        value: 1
-        key: discountProrateMethod
-        value: 1
-        key: integer
-        value: 0
-        key: exponent
-        value: 0
-        key: currencyMeasurement
-        value: 501*/
 
     //logicScript-用於存儲script
     private Map<String,String> logicScriptMap;
@@ -78,5 +44,7 @@ public class ConditionNode {
     //根據節點不同獲取不同的action
     private Map<String, Action> actionMap;
 
+    //把生成的matrixPathList傳入Node中，以便於刪除文件。
+    private List<String> uselessPathList;
 
 }

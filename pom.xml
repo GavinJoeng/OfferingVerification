@@ -24,15 +24,21 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+
 	<dependencies>
-
-
 		<!-- fastjson.jar -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.78</version>
 		</dependency>
+
+		<!--		<dependency>-->
+		<!--			<groupId>com.google.code.gson</groupId>-->
+		<!--			<artifactId>gson</artifactId>-->
+		<!--			<version>2.8.5</version>-->
+		<!--		</dependency>-->
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -53,6 +59,7 @@
 			<artifactId>easypoi-base</artifactId>
 			<version>4.2.0</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>cn.afterturn</groupId>
@@ -87,24 +94,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20201115</version>
 		</dependency>
 
 		<!--引入druid-->
-		<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.1.8</version>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.graphstream</groupId>
@@ -117,6 +118,19 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.20</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
+		<!-- 添加 JSON.simple 依赖 -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -154,22 +168,43 @@
 			<version>2.0.31</version>
 		</dependency>
 
-		<!--華為數據庫-->
-		<!--		&lt;!&ndash; PostgreSQL JDBC Driver (Assuming you're using PostgreSQL) &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.postgresql</groupId>-->
-<!--			<artifactId>postgresql</artifactId>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>ZenithDriver</groupId>
+			<artifactId>ZenithDriver</artifactId>
+			<version>1.2.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/com.huawei.gauss.jdbc.ZenithDriver-1.2.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>dbmanproxydriver</groupId>
+			<artifactId>dbmanproxydriver</artifactId>
+			<version>1.2.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/dbmanproxydriver.jar</systemPath>
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>junit</groupId>-->
+		<!--			<artifactId>junit</artifactId>-->
+		<!--			<version>4.13.1</version>-->
+		<!--			<scope>test</scope>-->
+		<!--		</dependency>-->
 
-<!--		&lt;!&ndash; Huawei Database Driver &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.huawei.ngcbs</groupId>-->
-<!--			<artifactId>dbmanproxydriver</artifactId>-->
-<!--			<version>1.0.0</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.8.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.8.2</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
+
 
 	<build>
 		<plugins>
@@ -179,6 +214,24 @@
 				<version>2.6.3</version>
 			</plugin>
 		</plugins>
+		<!--   **.xml写在src找不到问题解决方案     -->
+		<resources>
+			<resource>
+				<!-- directory：指定资源文件的位置 -->
+				<directory>src/main/java</directory>
+				<includes>
+					<!-- “**” 表示任意级目录    “*”表示任意任意文件 -->
+					<!-- mvn resources:resources　：对资源做出处理，先于compile阶段  -->
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<!--  filtering：开启过滤，用指定的参数替换directory下的文件中的参数(eg. ${name}) -->
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 	</build>
 
 

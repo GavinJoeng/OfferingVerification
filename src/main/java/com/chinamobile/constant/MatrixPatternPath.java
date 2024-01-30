@@ -25,31 +25,34 @@ public class MatrixPatternPath {
 
     //這是樹狀圖的開頭基礎路經，格式基本固定。
     //結尾需要加上[數組下標]
-    public static String BASIC_NODE_PATH_START = "$.[\"pattern-action-union\"].pattern[\"condition-selection-pattern\"][\"condition-node\"]";
+    //["pattern-action-union"][0]，加入暫定坐標
+    public static String BASIC_NODE_PATH_START = "$.[\"pattern-action-union\"][0].pattern[\"condition-selection-pattern\"][\"condition-node\"]";
 
     //結尾需要加上[數組下標]
     //如果判斷為非葉子節點則進行增加該路經
     //不加下標則是獲取conditionNodeList，可獲取數組大小和數組數據
     //這是樹狀圖的中間路經，格式基本固定。
-    public static String BASIC_NODE_PATH_MID = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"condition-selection-pattern\"][\"condition-node\"]";
+    public static String BASIC_NODE_PATH_MID = "[\"sub-pattern-and-action\"][\"pattern-action-union\"][0].pattern[\"condition-selection-pattern\"][\"condition-node\"]";
     //判斷是否是矩陣模式
-    public static String IS_MATRIX_PATTERN_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"@attributes\"][\"chosen-element\"]";
+    public static String IS_MATRIX_PATTERN_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"][0].pattern[\"@attributes\"][\"chosen-element\"]";
 
-    public static String MATRIX_ACTION_TYPE_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"matrix-selection-pattern\"][\"col-def\"][\"action-def\"][\"action-default-values\"][\"pattern-action-union\"].action[\"@attributes\"][\"chosen-element\"]";
+    public static String MATRIX_ACTION_TYPE_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"][0].pattern[\"matrix-selection-pattern\"][\"col-def\"][\"action-def\"][\"action-default-values\"][\"pattern-action-union\"][0].action[\"@attributes\"][\"chosen-element\"]";
 
-    public static String MATRIX_ID_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"matrix-selection-pattern\"][\"general-matrix-info\"][\"matrix-id\"].value";
+    public static String MATRIX_ID_PATH = "[\"sub-pattern-and-action\"][\"pattern-action-union\"][0].pattern[\"matrix-selection-pattern\"][\"general-matrix-info\"][\"matrix-id\"].value";
 
     //<!-- data-element="C_CALLING_HOME_CC" -->
-    public static String MATRIX_DATA_ELEMENT = "[\"sub-pattern-and-action\"][\"pattern-action-union\"].pattern[\"matrix-selection-pattern\"][\"col-def\"][\"condition-col-def\"][\"@attributes\"][\"data-element\"]";
+    public static String MATRIX_DATA_ELEMENT = "[\"sub-pattern-and-action\"][\"pattern-action-union\"][0].pattern[\"matrix-selection-pattern\"][\"col-def\"][\"condition-col-def\"][\"@attributes\"][\"data-element\"]";
 
     //以下參數必須讀取到數據庫的Matrix的xml才可以進行讀取。
+    public static final String MATRIX_ACTION_BASIC_PATH = "$.[\"pattern-action-union\"][0].";
+
     //Free Unit Type    Local GPRS Bucket C
-    public static String FREE_UNIT_TYPE_ID_PATH = "$.[\"pattern-action-union\"].action[\"free-unit-bonus-action\"][\"free-unit-type-id\"].value";
+    public static String FREE_UNIT_TYPE_ID_PATH = "[\"free-unit-type-id\"].value";
 
     //系統是以bits進行存儲，該程序是讀取display屬性來進行存儲
     //Bonus Amount  32212254720
-    public static String MATRIX_BONUS_AMOUNT_PATH = "$.[\"pattern-action-union\"].action[\"free-unit-bonus-action\"][\"bonus-amount\"].constant[\"constant-value\"][\"@attributes\"][\"display-value\"]";
+    public static String MATRIX_BONUS_AMOUNT_PATH = "[\"bonus-amount\"].constant[\"constant-value\"][\"@attributes\"][\"display-value\"]";
 
     //Measurement Unit  KB
-    public static String MATRIX_MEASUREMENT_ID_PATH = "$.[\"pattern-action-union\"].action[\"free-unit-bonus-action\"][\"display-measurement-id\"].value";
+    public static String MATRIX_MEASUREMENT_ID_PATH = "[\"display-measurement-id\"].value";
 }

@@ -1,6 +1,6 @@
 package com.chinamobile.tools;
 
-import com.chinamobile.constant.SingleNodePathConstants;
+import com.chinamobile.constant.MultiNodePathConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.*;
@@ -22,8 +22,8 @@ public class XMLtoJSON {
 
     public static void main(String[] args) {
 
-        String xmlFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_XML_FILE;
-        String jsonFilePath = SingleNodePathConstants.BASIC_PATH + SingleNodePathConstants.OFFERING_ID + SingleNodePathConstants.RULE_JSON_PATH;
+        String xmlFilePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_XML_FILE;
+        String jsonFilePath = MultiNodePathConstants.BASIC_PATH + MultiNodePathConstants.OFFERING_ID + MultiNodePathConstants.RULE_JSON_PATH;
         convertXML2Json(xmlFilePath,jsonFilePath);
 
     }
@@ -73,7 +73,7 @@ public class XMLtoJSON {
      * @param element
      * @param json
      */
-    private static void convertElementToJson(Element element, JSONObject json) {
+    public static void convertElementToJson(Element element, JSONObject json) {
 
         NamedNodeMap attributes = element.getAttributes();
         if (attributes.getLength() > 0) {
@@ -103,10 +103,19 @@ public class XMLtoJSON {
                     if (!textContent.isEmpty()) {
                         json.put(tagName, textContent);
                     }
-                } else {
+                }else {
                     JSONObject childJson = new JSONObject();
                     if (tagName.equals("condition-node")) {
                         // 将同级的 <condition-node> 标签转换为数组
+                        JSONArray conditionNodesArray = json.optJSONArray(tagName);
+                        if (conditionNodesArray == null) {
+                            conditionNodesArray = new JSONArray();
+                            json.put(tagName, conditionNodesArray);
+                        }
+                        convertElementToJson(childElement, childJson);
+                        conditionNodesArray.put(childJson);
+                    } else if (tagName.equals("pattern-action-union")) {
+                        // 将同级的 <pattern-action-union> 标签转换为数组
                         JSONArray conditionNodesArray = json.optJSONArray(tagName);
                         if (conditionNodesArray == null) {
                             conditionNodesArray = new JSONArray();
